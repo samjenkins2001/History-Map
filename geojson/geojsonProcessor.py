@@ -61,7 +61,7 @@ class GeoJSONProcessor:
         self.merge()
 
 if __name__ == "__main__":
-    year = 1530
+    year = 1945
     shp_file = f'../raw_boundaries/cntry{year}.shp'
     shx_file = f'../raw_boundaries/cntry{year}.shx'
     new_geojson = f'year_data/{year}.geojson'
