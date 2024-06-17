@@ -1,18 +1,50 @@
-document.getElementById('year-input').addEventListener('input', function() {
-    const year = this.value;
+document.getElementById('load-data').addEventListener('click', function() {
+    const year = document.getElementById('year-input').value;
     if (year) {
         updateMap(year);
     }
 });
 
-const map = L.map('map').setView([20, 0], 2); // Center map at (20, 0) with zoom level 2
+const width = 960;
+const height = 600;
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
+const svg = d3.select('#map').append('svg')
+    .attr('width', width)
+    .attr('height', height);
+
+const projection = d3.geoMercator()
+    .scale(150)
+    .translate([width / 2, height / 2]);
+
+const path = d3.geoPath().projection(projection);
+
+// Draw a blank world map
+d3.json('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson').then(function(data) {
+    svg.append('g')
+        .selectAll('path')
+        .data(data.features)
+        .enter().append('path')
+        .attr('d', path)
+        .attr('class', 'country')
+        .attr('fill', '#ccc')
+});
 
 function updateMap(year) {
-    // Placeholder function - you will need to implement the logic to update the map
-    console.log(`Updating map to the year: ${year}`);
-    // For example, you might change the displayed layers based on the year
+    fetch(`/geojson/${year}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(`Received data for year ${year}:`, data);
+            svg.selectAll('.boundary').remove();
+            svg.append('g')
+                .selectAll('path')
+                .data(data.features)
+                .enter().append('path')
+                .attr('d', path)
+                .attr('class', 'boundary')
+                .attr('fill', 'none')
+                .attr('stroke', 'red');
+        })
+        .catch(error => {
+            console.error('Error fetching GeoJSON data:', error);
+        });
 }

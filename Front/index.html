@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historical World Map</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://d3js.org/d3.v6.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Historical World Map</h1>
-        <input type="number" id="year-input" placeholder="Enter a year" />
+    <div id="container">
+        <input type="number" id="year-input" placeholder="Enter Year">
+        <button id="load-data">Load Data</button>
         <div id="map"></div>
     </div>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
