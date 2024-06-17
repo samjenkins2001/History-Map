@@ -1,8 +1,6 @@
 import json
+import subprocess
 import os
-import fiona
-from fiona.transform import transform_geom
-from fiona.crs import from_epsg
 
 class GeoJSONProcessor:
     def __init__(self, shp_file, shx_file, year, new_geojson, main_geojson, year_added_geojson):
@@ -16,28 +14,9 @@ class GeoJSONProcessor:
     #Incomplete, haven't solved source/dest issue
     def convert_shp_to_geojson(self):
 
-        source_crs = from_epsg(4326)
-        dest_crs = from_epsg(4326)
-
-        with fiona.open(self.shp_file, crs=source_crs) as source:
-            features = []
-            for feature in source:
-                transformed_geom = transform_geom(
-                    source.crs, dest_crs, feature['geometry']
-                )
-                features.append({
-                    "type": "Feature",
-                    "properties": feature['properties'],
-                    "geometry": transformed_geom
-                })
-
-        geojson_data = {
-            "type": "FeatureCollection",
-            "features": features
-        }
-
-        with open(self.new_geojson, 'w', encoding='utf-8') as f:
-            json.dump(geojson_data, f, ensure_ascii=False, indent=4)
+        subprocess.run([
+            'ogr2ogr', '-f', 'GeoJSON', self.new_geojson, self.shp_file
+        ], check=True)
 
         print(f"Converted SHP to GeoJSON: {self.new_geojson}")
 
@@ -54,6 +33,7 @@ class GeoJSONProcessor:
         with open(self.year_added_geojson, 'w', encoding='utf-8') as f:
             json.dump(geojson_data, f, ensure_ascii=False, indent=4)
 
+        os.remove(self.new_geojson)
         print(f"Updated GeoJSON data written to {self.year_added_geojson}")
 
     def merge(self):
@@ -76,14 +56,14 @@ class GeoJSONProcessor:
         print(f"Merged GeoJSON data into: {self.main_geojson}")
 
     def process(self):
-        # self.convert_shp_to_geojson()
+        self.convert_shp_to_geojson()
         self.add_year_property()
         self.merge()
 
 if __name__ == "__main__":
-    shp_file = '../raw_boundaries/cntry323bc.shp'
-    shx_file = '../raw_boundaries/cntry323bc.shx'
-    year = -323
+    year = 1530
+    shp_file = f'../raw_boundaries/cntry{year}.shp'
+    shx_file = f'../raw_boundaries/cntry{year}.shx'
     new_geojson = f'year_data/{year}.geojson'
     year_added_geojson = f'year_data/feature_{year}.geojson'
     main_geojson = 'current_map.geojson'
