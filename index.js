@@ -10,10 +10,12 @@ app.use(express.static(path.join(__dirname, 'Front')));
 // Endpoint to get GeoJSON data by year
 app.get('/geojson/:year', async (req, res) => {
     const year = parseInt(req.params.year);
-    const filePath = path.join(__dirname, 'geojson', 'year_data', `${year}.geojson`);
 
     try {
         // Read the GeoJSON file for the specified year asynchronously
+        const filePath = path.join(__dirname, 'geojson', 'year_data', `${year}.geojson`);
+        console.log('Attempting to read file:', filePath);
+        
         const data = await fs.readFile(filePath, 'utf8');
         const geojsonData = JSON.parse(data);
 
