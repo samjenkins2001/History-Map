@@ -31,7 +31,12 @@ d3.json('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/w
 
 function updateMap(year) {
     fetch(`/geojson/${year}`)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Data not found for the given year');
+            }
+            return response.json();
+        })
         .then(data => {
             console.log(`Received data for year ${year}:`, data);
             svg.selectAll('.boundary').remove();
@@ -43,8 +48,10 @@ function updateMap(year) {
                 .attr('class', 'boundary')
                 .attr('fill', 'none')
                 .attr('stroke', 'red');
+            document.getElementById('error').textContent = '';
         })
         .catch(error => {
             console.error('Error fetching GeoJSON data:', error);
+            document.getElementById('error').textContent = error.message; // Display error message
         });
 }
