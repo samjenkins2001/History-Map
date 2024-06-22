@@ -35,29 +35,9 @@ class GeoJSONProcessor:
         os.remove(self.new_geojson)
         print(f"Updated GeoJSON data written to {self.year_added_geojson}")
 
-    # def merge(self):
-    #     with open(self.main_geojson, 'r', encoding='utf-8') as f:
-    #         main_data = json.load(f)
-
-    #     with open(self.year_added_geojson, 'r', encoding='utf-8') as f:
-    #         new_data = json.load(f)
-
-    #     merged_features = main_data['features'] + new_data['features']
-
-    #     merged_geojson_data = {
-    #         "type": "FeatureCollection",
-    #         "features": merged_features
-    #     }
-
-    #     with open(self.main_geojson, 'w', encoding='utf-8') as f:
-    #         json.dump(merged_geojson_data, f, ensure_ascii=False, indent=4)
-
-    #     print(f"Merged GeoJSON data into: {self.main_geojson}")
-
     def process(self):
         self.convert_shp_to_geojson()
         self.add_year_property()
-        # self.merge()
 
 if __name__ == "__main__":
     year = 1945
