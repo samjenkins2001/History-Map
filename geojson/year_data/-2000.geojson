@@ -22179,7 +22179,8 @@
         {
             "type": "Feature",
             "properties": {
-                "year": "2000BC"
+                "year": "2000BC",
+                "country": "america"
             },
             "geometry": {
                 "type": "MultiPolygon",
