@@ -22180,7 +22180,7 @@
             "type": "Feature",
             "properties": {
                 "year": "2000BC",
-                "country": "america"
+                "country": "America"
             },
             "geometry": {
                 "type": "MultiPolygon",

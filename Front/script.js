@@ -1,12 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const yearDropdown = document.getElementById('year-dropdown');
 
     // Populate dropdown with years
     const years = [-2000, -1000, -500, -323, -200, -1, 400, 600, 800, 1000, 1279, 1492, 1530, 1650, 1715, 1783, 1815, 1880, 1914, 1920, 1938, 1945, 1994, 2024];
+    const yearDropdown = document.getElementById('year-dropdown');
+
     years.forEach(year => {
         const option = document.createElement('option');
         option.value = year;
-        option.textContent = year;
+        option.text = year < 0 ? `${Math.abs(year)} BCE` : year;  // Format BCE years
         yearDropdown.appendChild(option);
     });
 
@@ -55,6 +56,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Draw a blank world map
     d3.json('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson').then(function(data) {
+        drawMap(data);
+    });
+    
+    function drawMap(data) {
+        svg.selectAll('path').remove();
         svg.append('g')
             .selectAll('path')
             .data(data.features)
@@ -62,7 +68,25 @@ document.addEventListener('DOMContentLoaded', function() {
             .attr('d', path)
             .attr('class', 'country')
             .attr('fill', '#ccc')
-    });
+            .attr('stroke', 'black')
+            .attr('stroke-width', 0.5)
+            .on('mouseover', function(event, d) {
+                const properties = d.properties;
+                tooltip.transition()
+                    .duration(200)
+                    .style('opacity', .9);
+                tooltip.html(`<strong>${properties.country}</strong><br>
+                              Ruler: ${properties.ruler}<br>
+                              Citizens: ${properties.citizens}`)
+                    .style('left', (event.pageX + 10) + 'px')
+                    .style('top', (event.pageY - 28) + 'px');
+            })
+            .on('mouseout', function() {
+                tooltip.transition()
+                    .duration(500)
+                    .style('opacity', 0);
+            });
+    }
 
     function updateMap(year) {
         fetch(`/geojson/${year}`)
@@ -74,31 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(data => {
                 console.log(`Received data for year ${year}:`, data);
-                svg.selectAll('.boundary').remove();
-                svg.append('g')
-                    .selectAll('path')
-                    .data(data.features)
-                    .enter().append('path')
-                    .attr('d', path)
-                    .attr('class', 'boundary')
-                    .attr('fill', 'none')
-                    .attr('stroke', 'red')
-                    .on('mouseover', function(event, d) {
-                        const properties = d.properties;
-                        tooltip.transition()
-                            .duration(200)
-                            .style('opacity', .9);
-                        tooltip.html(`<strong>${properties.country}</strong><br>
-                                      Ruler: ${properties.ruler}<br>
-                                      Citizens: ${properties.citizens}`)
-                            .style('left', (event.pageX + 10) + 'px')
-                            .style('top', (event.pageY - 28) + 'px');
-                        })
-                        .on('mouseout', function(d) {
-                            tooltip.transition()
-                                .duration(500)
-                                .style('opacity', 0);
-                        });
+                drawMap(data);
                 document.getElementById('error').textContent = '';
             })
             .catch(error => {
