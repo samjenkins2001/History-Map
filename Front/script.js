@@ -24,14 +24,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('error').textContent = '';
     });
 
-    yearDropdown.addEventListener('keypress', function(event) {
+    yearDropdown.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
-            const year = yearDropdown.value;
-            if (year) {
-                updateMap(year);
-            } else {
-                document.getElementById('error').textContent = 'Please select a year.';
-            }
+            document.getElementById('load-data').click();
         }
     });
 
@@ -72,14 +67,16 @@ document.addEventListener('DOMContentLoaded', function() {
             .attr('stroke-width', 0.5)
             .on('mouseover', function(event, d) {
                 const properties = d.properties;
-                tooltip.transition()
-                    .duration(200)
-                    .style('opacity', .9);
-                tooltip.html(`<strong>${properties.country}</strong><br>
-                              Ruler: ${properties.ruler}<br>
-                              Citizens: ${properties.citizens}`)
-                    .style('left', (event.pageX + 10) + 'px')
-                    .style('top', (event.pageY - 28) + 'px');
+                if (properties.country) {
+                    tooltip.transition()
+                        .duration(200)
+                        .style('opacity', .9);
+                    tooltip.html(`<strong>${properties.country}</strong><br>
+                                Ruler: ${properties.ruler}<br>
+                                Citizens: ${properties.population}`)
+                        .style('left', (event.pageX + 10) + 'px')
+                        .style('top', (event.pageY - 28) + 'px');
+                }
             })
             .on('mouseout', function() {
                 tooltip.transition()
