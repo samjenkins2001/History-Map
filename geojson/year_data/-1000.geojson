@@ -22180,9 +22180,15 @@
         "type": "Feature",
         "properties": {
           "year": -1000,
-          "country": "Saba",
-          "ruler": "Yatha' 'Amr Bayin ",
-          "population": "N/A"
+          "population": "N/A",
+          "country": {
+            "label": "Saba",
+            "url": "https://www.britannica.com/place/Saba-ancient-kingdom-Arabia"
+          },
+          "ruler": {
+            "label": "Yatha' 'Amr Bayin",
+            "url": "https://en.wikipedia.org/wiki/Yitha%27amar_Bayyin_II"
+          }
         },
         "geometry": {
           "type": "Polygon",

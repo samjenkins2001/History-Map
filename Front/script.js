@@ -68,22 +68,33 @@ document.addEventListener('DOMContentLoaded', function() {
             .on('mouseover', function(event, d) {
                 const properties = d.properties;
                 if (properties.country) {
-                    tooltip.transition()
+                    clearTimeout(tooltipTimeout);
+                    
+                    tooltip.style("visibility", "visible")
+                        .transition()
                         .duration(200)
                         .style('opacity', .9);
-                    tooltip.html(`<strong>${properties.country}</strong><br>
-                                Ruler: ${properties.ruler}<br>
+
+                    tooltip.html(`<strong>
+                                    <a href="${properties.country.url}" target="_blank">${properties.country.label}</a>
+                                </strong><br>
+                                <a href="${properties.ruler.url}" target="_blank">${properties.ruler.label}</a><br>
                                 Citizens: ${properties.population}`)
                         .style('left', (event.pageX + 10) + 'px')
                         .style('top', (event.pageY - 28) + 'px');
                 }
             })
             .on('mouseout', function() {
-                tooltip.transition()
+                tooltipTimeout = setTimeout(function() {
+                    tooltip.transition()
                     .duration(500)
-                    .style('opacity', 0);
-            });
-    }
+                    .style('opacity', 0)
+                    .on("end", function() {
+                        tooltip.style("visibility", "hidden");
+                    });
+            }, 2000);
+        });
+}
 
     function updateMap(year) {
         fetch(`/geojson/${year}`)
