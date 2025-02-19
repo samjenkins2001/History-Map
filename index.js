@@ -8,7 +8,7 @@ const port = 3000;
 app.use(express.static(path.join(__dirname, 'Front')));
 
 // Endpoint to get GeoJSON data by year
-app.get('/geojson/:year', async (req, res) => {
+app.get('/geojson/year_data/:year', async (req, res) => {
     const year = parseInt(req.params.year);
 
     try {
