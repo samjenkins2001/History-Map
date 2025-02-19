@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
     function updateMap(year) {
-        fetch(`/geojson/${year}`)
+        fetch(`/geojson/year_data/${year}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Data not found for the given year');
